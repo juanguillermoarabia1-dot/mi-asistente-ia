@@ -25,7 +25,10 @@
       display: flex;
       flex-direction: column;
       position: fixed;
-      inset: 0;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
     }
 
     /* Barra superior minimalista */
@@ -370,7 +373,10 @@
     #voice-overlay {
       display: none;
       position: fixed;
-      inset: 0;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
       background: linear-gradient(180deg, #f8fbff 0%, #ffffff 100%);
       z-index: 200;
       flex-direction: column;
@@ -455,9 +461,3 @@
   <header>
     <button class="icon-btn" onclick="toggleApiModal()" title="Configurar Clave API">☰</button>
     <div class="header-pill">✦ Mi Asistente IA</div>
-    <button class="icon-btn" onclick="nuevoChat()" title="Nuevo Chat">↻</button>
-  </header>
-
-  <div id="api-modal">
-    <h3>🔑 Clave API de Google Gemini</h3>
-
