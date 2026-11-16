@@ -126,13 +126,13 @@
     function manejarArchivo(event) {
       var lista = event.target.files;
       if (!lista || lista.length === 0) return;
-      var file = lista[0];
+      var file = lista.item(0);
       archivoMimeType = file.type || "text/plain";
       document.getElementById("status-text").textContent = "📎 " + file.name;
       document.getElementById("status-bar").style.display = "block";
       var reader = new FileReader();
       reader.onload = function() {
-        archivoBase64 = reader.result.split(",")[1];
+        archivoBase64 = reader.result.split(",").at(1);
         actualizarBotones();
       };
       reader.readAsDataURL(file);
