@@ -6,390 +6,88 @@
   <title>Mi Asistente IA</title>
   <script src="https://jsdelivr.net"></script>
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: sans-serif;
-    }
-
-    body {
-      background-color: #ffffff;
-      color: #1f1f1f;
-    }
-
-    header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 64px;
-      background-color: #ffffff;
-      padding: 12px 16px;
-      text-align: center;
-      z-index: 20;
-    }
-
-    .btn-left {
-      float: left;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      border: 1px solid #e5e5e5;
-      background-color: #f8f9fa;
-      color: #1f1f1f;
-      font-size: 18px;
-    }
-
-    .btn-right {
-      float: right;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      border: 1px solid #e5e5e5;
-      background-color: #f8f9fa;
-      color: #1f1f1f;
-      font-size: 18px;
-    }
-
-    .header-pill {
-      display: inline-block;
-      background-color: #eef4ff;
-      color: #1a73e8;
-      padding: 9px 18px;
-      border-radius: 20px;
-      font-size: 14px;
-      font-weight: bold;
-      margin-top: 2px;
-    }
-
-    #api-modal {
-      display: none;
-      position: fixed;
-      top: 70px;
-      left: 16px;
-      right: 16px;
-      background: #ffffff;
-      border: 1px solid #d0d0d0;
-      border-radius: 16px;
-      padding: 16px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.18);
-      z-index: 100;
-    }
-
-    #api-modal h3 {
-      font-size: 15px;
-      margin-bottom: 10px;
-      color: #333;
-    }
-
-    #api-modal input {
-      width: 68%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      font-size: 14px;
-    }
-
-    #api-modal button {
-      width: 28%;
-      float: right;
-      background-color: #1a73e8;
-      color: #ffffff;
-      border: none;
-      padding: 11px 0;
-      border-radius: 10px;
-      font-weight: bold;
-    }
-
-    #chat-container {
-      position: fixed;
-      top: 64px;
-      bottom: 84px;
-      left: 0;
-      right: 0;
-      overflow-y: auto;
-      padding: 16px;
-    }
-
-    #welcome-screen {
-      padding-top: 40px;
-    }
-
-    .suggestion-item {
-      padding: 14px 16px;
-      margin-bottom: 10px;
-      border-radius: 14px;
-      background-color: #f8f9fa;
-      color: #333;
-      font-size: 15px;
-    }
-
-    .message-row {
-      margin-bottom: 14px;
-      overflow: hidden;
-    }
-
-    .user-message {
-      float: right;
-      max-width: 82%;
-      background-color: #f0f2f5;
-      color: #1f1f1f;
-      padding: 12px 16px;
-      border-radius: 20px;
-      font-size: 15px;
-      line-height: 1.4;
-      word-wrap: break-word;
-    }
-
-    .bot-message {
-      width: 100%;
-      color: #1f1f1f;
-      font-size: 15px;
-      line-height: 1.5;
-      word-wrap: break-word;
-    }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
+    body { background: #ffffff; color: #1f1f1f; }
+    header { position: fixed; top: 0; left: 0; right: 0; height: 64px; background: #ffffff; padding: 12px 16px; text-align: center; z-index: 20; }
+    .btn-circle { width: 40px; height: 40px; border-radius: 50%; border: 1px solid #e5e5e5; background: #f8f9fa; color: #1f1f1f; font-size: 18px; }
+    #btn-menu { float: left; }
+    #btn-nuevo { float: right; }
+    .header-pill { display: inline-block; background: #eef4ff; color: #1a73e8; padding: 9px 18px; border-radius: 20px; font-size: 14px; font-weight: bold; margin-top: 2px; }
+    #api-modal { display: none; position: fixed; top: 70px; left: 16px; right: 16px; background: #ffffff; border: 1px solid #d0d0d0; border-radius: 16px; padding: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.18); z-index: 100; }
+    #api-modal h3 { font-size: 15px; margin-bottom: 10px; color: #333; }
+    #api-key-input { width: 68%; padding: 10px; border: 1px solid #ccc; border-radius: 10px; font-size: 14px; }
+    #btn-guardar-api { width: 28%; float: right; background: #1a73e8; color: #ffffff; border: none; padding: 11px 0; border-radius: 10px; font-weight: bold; }
+    #chat-container { position: fixed; top: 64px; bottom: 84px; left: 0; right: 0; overflow-y: auto; padding: 16px; }
+    #welcome-screen { padding-top: 40px; }
+    .suggestion-item { padding: 14px 16px; margin-bottom: 10px; border-radius: 14px; background: #f8f9fa; color: #333; font-size: 15px; }
+    .message-row { margin-bottom: 14px; overflow: hidden; }
+    .user-message { float: right; max-width: 82%; background: #f0f2f5; color: #1f1f1f; padding: 12px 16px; border-radius: 20px; font-size: 15px; line-height: 1.4; word-wrap: break-word; }
+    .bot-message { width: 100%; color: #1f1f1f; font-size: 15px; line-height: 1.5; word-wrap: break-word; }
     .bot-message p { margin-bottom: 10px; }
     .bot-message ul, .bot-message ol { margin-left: 20px; margin-bottom: 10px; }
-    .bot-message pre {
-      background: #1e1e1e;
-      color: #f8f8f2;
-      padding: 12px;
-      border-radius: 10px;
-      overflow-x: auto;
-      margin: 10px 0;
-      font-size: 13px;
-    }
-
-    .speak-btn {
-      margin-top: 6px;
-      background: #f0f2f5;
-      border: none;
-      border-radius: 14px;
-      padding: 6px 12px;
-      font-size: 12px;
-      color: #444;
-    }
-
-    #plus-menu {
-      display: none;
-      position: fixed;
-      bottom: 80px;
-      left: 16px;
-      width: 220px;
-      background: #ffffff;
-      border-radius: 18px;
-      padding: 8px;
-      box-shadow: 0 8px 28px rgba(0,0,0,0.2);
-      border: 1px solid #eee;
-      z-index: 90;
-    }
-
-    .menu-option {
-      display: block;
-      width: 100%;
-      padding: 12px;
-      border: none;
-      background: transparent;
-      font-size: 15px;
-      color: #1f1f1f;
-      text-align: left;
-      border-radius: 12px;
-    }
-
-    #status-bar {
-      display: none;
-      position: fixed;
-      bottom: 74px;
-      left: 16px;
-      right: 16px;
-      background: #eef4ff;
-      color: #1a73e8;
-      padding: 6px 12px;
-      border-radius: 14px;
-      font-size: 13px;
-      z-index: 30;
-    }
-
-    footer {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 74px;
-      background-color: #ffffff;
-      padding: 10px 14px;
-      z-index: 20;
-    }
-
-    .input-pill {
-      position: relative;
-      background-color: #f2f3f5;
-      border-radius: 28px;
-      height: 50px;
-      padding: 6px 8px;
-    }
-
-    .plus-btn {
-      position: absolute;
-      left: 8px;
-      top: 7px;
-      width: 36px;
-      height: 36px;
-      border: none;
-      background: none;
-      font-size: 24px;
-      color: #444;
-    }
-
-    #user-input {
-      position: absolute;
-      left: 48px;
-      right: 88px;
-      top: 8px;
-      height: 34px;
-      border: none;
-      background: transparent;
-      font-size: 15px;
-      color: #1f1f1f;
-      outline: none;
-      resize: none;
-      padding-top: 6px;
-    }
-
-    #mic-btn {
-      position: absolute;
-      right: 48px;
-      top: 7px;
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      border: none;
-      background: transparent;
-      font-size: 18px;
-    }
-
-    #mic-btn.grabando {
-      background-color: #ea4335;
-      color: #ffffff;
-    }
-
-    #voice-mode-btn {
-      position: absolute;
-      right: 6px;
-      top: 6px;
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      border: none;
-      background-color: #1a73e8;
-      color: #ffffff;
-      font-size: 16px;
-    }
-
-    #send-btn {
-      display: none;
-      position: absolute;
-      right: 6px;
-      top: 6px;
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      border: none;
-      background-color: #1f1f1f;
-      color: #ffffff;
-      font-size: 16px;
-    }
-
-    #voice-overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: #f8fbff;
-      z-index: 200;
-      text-align: center;
-      padding-top: 60px;
-    }
-
-    .voice-orb {
-      width: 140px;
-      height: 140px;
-      margin: 80px auto 30px auto;
-      border-radius: 50%;
-      background-color: #1a73e8;
-    }
-
-    .voice-orb.escuchando {
-      background-color: #059669;
-    }
-
-    .close-voice-btn {
-      position: fixed;
-      bottom: 40px;
-      left: 50%;
-      margin-left: -30px;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      border: none;
-      background-color: #ea4335;
-      color: #ffffff;
-      font-size: 24px;
-    }
+    .bot-message pre { background: #1e1e1e; color: #f8f8f2; padding: 12px; border-radius: 10px; overflow-x: auto; margin: 10px 0; font-size: 13px; }
+    .speak-btn { margin-top: 6px; background: #f0f2f5; border: none; border-radius: 14px; padding: 6px 12px; font-size: 12px; color: #444; }
+    #plus-menu { display: none; position: fixed; bottom: 80px; left: 16px; width: 220px; background: #ffffff; border-radius: 18px; padding: 8px; box-shadow: 0 8px 28px rgba(0,0,0,0.2); border: 1px solid #eee; z-index: 90; }
+    .menu-option { display: block; width: 100%; padding: 12px; border: none; background: transparent; font-size: 15px; color: #1f1f1f; text-align: left; border-radius: 12px; }
+    #status-bar { display: none; position: fixed; bottom: 74px; left: 16px; right: 16px; background: #eef4ff; color: #1a73e8; padding: 6px 12px; border-radius: 14px; font-size: 13px; z-index: 30; }
+    footer { position: fixed; bottom: 0; left: 0; right: 0; height: 74px; background: #ffffff; padding: 10px 14px; z-index: 20; }
+    .input-pill { position: relative; background: #f2f3f5; border-radius: 28px; height: 50px; padding: 6px 8px; }
+    #plus-btn { position: absolute; left: 8px; top: 7px; width: 36px; height: 36px; border: none; background: none; font-size: 24px; color: #444; }
+    #user-input { position: absolute; left: 48px; right: 88px; top: 8px; height: 34px; border: none; background: transparent; font-size: 15px; color: #1f1f1f; outline: none; resize: none; padding-top: 6px; }
+    #mic-btn { position: absolute; right: 48px; top: 7px; width: 36px; height: 36px; border-radius: 50%; border: none; background: transparent; font-size: 18px; }
+    #mic-btn.grabando { background: #ea4335; color: #ffffff; }
+    #voice-mode-btn { position: absolute; right: 6px; top: 6px; width: 38px; height: 38px; border-radius: 50%; border: none; background: #1a73e8; color: #ffffff; font-size: 16px; }
+    #send-btn { display: none; position: absolute; right: 6px; top: 6px; width: 38px; height: 38px; border-radius: 50%; border: none; background: #1f1f1f; color: #ffffff; font-size: 16px; }
+    #voice-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #f8fbff; z-index: 200; text-align: center; padding-top: 60px; }
+    .voice-orb { width: 140px; height: 140px; margin: 80px auto 30px auto; border-radius: 50%; background: #1a73e8; }
+    .voice-orb.escuchando { background: #059669; }
+    #btn-cerrar-voz { position: fixed; bottom: 40px; left: 50%; margin-left: -30px; width: 60px; height: 60px; border-radius: 50%; border: none; background: #ea4335; color: #ffffff; font-size: 24px; }
   </style>
 </head>
 <body>
 
   <header>
-    <button type="button" class="btn-left" onclick="toggleApiModal()">☰</button>
+    <button type="button" id="btn-menu" class="btn-circle">☰</button>
     <div class="header-pill">✦ Mi Asistente IA</div>
-    <button type="button" class="btn-right" onclick="nuevoChat()">↻</button>
+    <button type="button" id="btn-nuevo" class="btn-circle">↻</button>
   </header>
 
   <div id="api-modal">
     <h3>🔑 Clave API de Google Gemini</h3>
     <input type="password" id="api-key-input" placeholder="Pega tu API Key aquí..." />
-    <button type="button" onclick="guardarClave()">Guardar</button>
+    <button type="button" id="btn-guardar-api">Guardar</button>
   </div>
 
   <div id="chat-container">
     <div id="welcome-screen">
-      <div class="suggestion-item" onclick="usarSugerencia('Ayúdame a crear el código para una aplicación')">
-        🖼️ Crear código o aplicación
-      </div>
-      <div class="suggestion-item" onclick="usarSugerencia('Escribe un guion creativo para un video')">
-        ✏️ Escribe o edita
-      </div>
+      <div class="suggestion-item" id="sug-1">🖼️ Crear código o aplicación</div>
+      <div class="suggestion-item" id="sug-2">✏️ Escribe o edita</div>
     </div>
   </div>
 
   <div id="plus-menu">
-    <button type="button" class="menu-option" onclick="abrirSelector('camera-input')">📷 Cámara</button>
-    <button type="button" class="menu-option" onclick="abrirSelector('photo-input')">🖼️ Fotos</button>
-    <button type="button" class="menu-option" onclick="abrirSelector('file-input')">📎 Archivos</button>
-    <button type="button" class="menu-option" onclick="activarPensarMas()">⏱️ Pensar más</button>
+    <button type="button" class="menu-option" id="opt-camara">📷 Cámara</button>
+    <button type="button" class="menu-option" id="opt-fotos">🖼️ Fotos</button>
+    <button type="button" class="menu-option" id="opt-archivos">📎 Archivos</button>
+    <button type="button" class="menu-option" id="opt-pensar">⏱️ Pensar más</button>
   </div>
 
-  <input type="file" id="camera-input" accept="image/*" capture="environment" style="display:none" onchange="manejarArchivo(event)" />
-  <input type="file" id="photo-input" accept="image/*" style="display:none" onchange="manejarArchivo(event)" />
-  <input type="file" id="file-input" accept=".pdf,.txt,.html,.js,.css,.json,.csv" style="display:none" onchange="manejarArchivo(event)" />
+  <input type="file" id="camera-input" accept="image/*" capture="environment" style="display:none" />
+  <input type="file" id="photo-input" accept="image/*" style="display:none" />
+  <input type="file" id="file-input" accept=".pdf,.txt,.html,.js,.css,.json,.csv" style="display:none" />
 
   <div id="status-bar">
     <span id="status-text"></span>
-    <span style="float:right; font-weight:bold;" onclick="limpiarEstado()">✕</span>
+    <span id="btn-limpiar-estado" style="float:right; font-weight:bold;">✕</span>
   </div>
 
   <footer>
     <div class="input-pill">
-      <button type="button" class="plus-btn" onclick="togglePlusMenu()">+</button>
-      <textarea id="user-input" rows="1" placeholder="Preguntar a mi Asistente" oninput="actualizarBotones()" onkeyup="actualizarBotones()"></textarea>
-      <button type="button" id="mic-btn" onclick="dictarTexto()">🎙️</button>
-      <button type="button" id="voice-mode-btn" onclick="iniciarModoVoz()">ılılı</button>
-      <button type="button" id="send-btn" onclick="enviarMensaje()">▲</button>
+      <button type="button" id="plus-btn">+</button>
+      <textarea id="user-input" rows="1" placeholder="Preguntar a mi Asistente"></textarea>
+      <button type="button" id="mic-btn">🎙️</button>
+      <button type="button" id="voice-mode-btn">ılılı</button>
+      <button type="button" id="send-btn">▲</button>
     </div>
   </footer>
 
@@ -398,7 +96,7 @@
     <div id="voice-orb" class="voice-orb"></div>
     <div id="voice-status" style="font-size:18px; font-weight:bold; margin-bottom:10px;">Escuchando...</div>
     <div id="voice-subtitle" style="font-size:14px; color:#666; padding:0 20px;">Habla ahora, te escucho</div>
-    <button type="button" class="close-voice-btn" onclick="cerrarModoVoz()">✕</button>
+    <button type="button" id="btn-cerrar-voz">✕</button>
   </div>
 
   <script>
@@ -408,8 +106,70 @@
     var pensarMasActivo = false;
     var modoVozActivo = false;
     var reconocimiento = null;
-
     var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
-    window.onload = function() {
-      var clave = localStorage.getItem("gemini_api_key");
+    function actualizarBotones() {
+      var texto = document.getElementById("user-input").value.trim();
+      var hayAlgo = texto.length > 0 || archivoBase64 !== null;
+      document.getElementById("send-btn").style.display = hayAlgo ? "block" : "none";
+      document.getElementById("voice-mode-btn").style.display = hayAlgo ? "none" : "block";
+    }
+
+    function limpiarEstado() {
+      archivoBase64 = null;
+      archivoMimeType = null;
+      pensarMasActivo = false;
+      document.getElementById("status-bar").style.display = "none";
+      actualizarBotones();
+    }
+
+    function manejarArchivo(event) {
+      var lista = event.target.files;
+      if (!lista || lista.length === 0) return;
+      var file = lista[0];
+      archivoMimeType = file.type || "text/plain";
+      document.getElementById("status-text").textContent = "📎 " + file.name;
+      document.getElementById("status-bar").style.display = "block";
+      var reader = new FileReader();
+      reader.onload = function() {
+        archivoBase64 = reader.result.split(",")[1];
+        actualizarBotones();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function leerEnVozAlta(texto) {
+      if (!("speechSynthesis" in window)) return;
+      window.speechSynthesis.cancel();
+      var limpio = texto.replace(/[*#_`]/g, "");
+      var locucion = new SpeechSynthesisUtterance(limpio);
+      locucion.lang = "es-ES";
+      window.speechSynthesis.speak(locucion);
+    }
+
+    function agregarBurbuja(texto, esUsuario) {
+      var welcome = document.getElementById("welcome-screen");
+      if (welcome) welcome.parentNode.removeChild(welcome);
+      var chat = document.getElementById("chat-container");
+      var row = document.createElement("div");
+      row.className = "message-row";
+      var div = document.createElement("div");
+      div.className = esUsuario ? "user-message" : "bot-message";
+      if (esUsuario) {
+        div.textContent = texto;
+      } else {
+        div.innerHTML = (typeof marked !== "undefined") ? marked.parse(texto) : texto;
+      }
+      row.appendChild(div);
+      chat.appendChild(row);
+      chat.scrollTop = chat.scrollHeight;
+      return div;
+    }
+
+    function enviarMensaje() {
+      var apiKey = localStorage.getItem("gemini_api_key");
+      if (!apiKey) {
+        document.getElementById("api-modal").style.display = "block";
+        alert("Primero guarda tu clave API.");
+        return;
+      }
