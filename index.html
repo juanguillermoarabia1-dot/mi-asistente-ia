@@ -18,7 +18,6 @@
       color: #1f1f1f;
     }
 
-    /* Barra superior fija arriba */
     header {
       position: fixed;
       top: 0;
@@ -40,7 +39,6 @@
       background-color: #f8f9fa;
       color: #1f1f1f;
       font-size: 18px;
-      cursor: pointer;
     }
 
     .btn-right {
@@ -52,7 +50,6 @@
       background-color: #f8f9fa;
       color: #1f1f1f;
       font-size: 18px;
-      cursor: pointer;
     }
 
     .header-pill {
@@ -66,7 +63,6 @@
       margin-top: 2px;
     }
 
-    /* Panel oculto de Clave API */
     #api-modal {
       display: none;
       position: fixed;
@@ -106,7 +102,6 @@
       font-weight: bold;
     }
 
-    /* Área central de chat con scroll libre */
     #chat-container {
       position: fixed;
       top: 64px;
@@ -128,10 +123,8 @@
       background-color: #f8f9fa;
       color: #333;
       font-size: 15px;
-      cursor: pointer;
     }
 
-    /* Burbujas de mensajes */
     .message-row {
       margin-bottom: 14px;
       overflow: hidden;
@@ -179,7 +172,6 @@
       color: #444;
     }
 
-    /* Menú flotante al tocar + */
     #plus-menu {
       display: none;
       position: fixed;
@@ -206,7 +198,6 @@
       border-radius: 12px;
     }
 
-    /* Etiqueta de archivo o modo activo */
     #status-bar {
       display: none;
       position: fixed;
@@ -221,7 +212,6 @@
       z-index: 30;
     }
 
-    /* Barra inferior fija abajo (Siempre visible) */
     footer {
       position: fixed;
       bottom: 0;
@@ -312,7 +302,6 @@
       font-size: 16px;
     }
 
-    /* Pantalla de Modo Voz */
     #voice-overlay {
       display: none;
       position: fixed;
@@ -356,15 +345,15 @@
 <body>
 
   <header>
-    <button class="btn-left" onclick="toggleApiModal()">☰</button>
+    <button type="button" class="btn-left" onclick="toggleApiModal()">☰</button>
     <div class="header-pill">✦ Mi Asistente IA</div>
-    <button class="btn-right" onclick="nuevoChat()">↻</button>
+    <button type="button" class="btn-right" onclick="nuevoChat()">↻</button>
   </header>
 
   <div id="api-modal">
     <h3>🔑 Clave API de Google Gemini</h3>
     <input type="password" id="api-key-input" placeholder="Pega tu API Key aquí..." />
-    <button onclick="guardarClave()">Guardar</button>
+    <button type="button" onclick="guardarClave()">Guardar</button>
   </div>
 
   <div id="chat-container">
@@ -379,10 +368,10 @@
   </div>
 
   <div id="plus-menu">
-    <button class="menu-option" onclick="abrirSelector('camera-input')">📷 Cámara</button>
-    <button class="menu-option" onclick="abrirSelector('photo-input')">🖼️ Fotos</button>
-    <button class="menu-option" onclick="abrirSelector('file-input')">📎 Archivos</button>
-    <button class="menu-option" onclick="activarPensarMas()">⏱️ Pensar más</button>
+    <button type="button" class="menu-option" onclick="abrirSelector('camera-input')">📷 Cámara</button>
+    <button type="button" class="menu-option" onclick="abrirSelector('photo-input')">🖼️ Fotos</button>
+    <button type="button" class="menu-option" onclick="abrirSelector('file-input')">📎 Archivos</button>
+    <button type="button" class="menu-option" onclick="activarPensarMas()">⏱️ Pensar más</button>
   </div>
 
   <input type="file" id="camera-input" accept="image/*" capture="environment" style="display:none" onchange="manejarArchivo(event)" />
@@ -396,11 +385,11 @@
 
   <footer>
     <div class="input-pill">
-      <button class="plus-btn" onclick="togglePlusMenu()">+</button>
-      <textarea id="user-input" rows="1" placeholder="Preguntar a mi Asistente" oninput="actualizarBotones()"></textarea>
-      <button id="mic-btn" onclick="dictarTexto()">🎙️</button>
-      <button id="voice-mode-btn" onclick="iniciarModoVoz()">ılılı</button>
-      <button id="send-btn" onclick="enviarMensaje()">▲</button>
+      <button type="button" class="plus-btn" onclick="togglePlusMenu()">+</button>
+      <textarea id="user-input" rows="1" placeholder="Preguntar a mi Asistente" oninput="actualizarBotones()" onkeyup="actualizarBotones()"></textarea>
+      <button type="button" id="mic-btn" onclick="dictarTexto()">🎙️</button>
+      <button type="button" id="voice-mode-btn" onclick="iniciarModoVoz()">ılılı</button>
+      <button type="button" id="send-btn" onclick="enviarMensaje()">▲</button>
     </div>
   </footer>
 
@@ -409,7 +398,7 @@
     <div id="voice-orb" class="voice-orb"></div>
     <div id="voice-status" style="font-size:18px; font-weight:bold; margin-bottom:10px;">Escuchando...</div>
     <div id="voice-subtitle" style="font-size:14px; color:#666; padding:0 20px;">Habla ahora, te escucho</div>
-    <button class="close-voice-btn" onclick="cerrarModoVoz()">✕</button>
+    <button type="button" class="close-voice-btn" onclick="cerrarModoVoz()">✕</button>
   </div>
 
   <script>
@@ -420,3 +409,7 @@
     var modoVozActivo = false;
     var reconocimiento = null;
 
+    var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    window.onload = function() {
+      var clave = localStorage.getItem("gemini_api_key");
