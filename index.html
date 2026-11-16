@@ -1,196 +1,455 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Asistente IA Personal</title>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
-        body { background-color: #131314; color: #e3e3e3; display: flex; flex-direction: column; height: 100vh; }
-        
-        header { background-color: #1e1f20; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333537; flex-wrap: wrap; gap: 10px; }
-        header h1 { font-size: 1.1rem; color: #a8c7fa; }
-        
-        .api-box { display: flex; gap: 8px; align-items: center; }
-        .api-box input { background: #131314; border: 1px solid #444746; color: #fff; padding: 6px 10px; border-radius: 6px; width: 230px; font-size: 0.85rem; }
-        .api-box button { background: #a8c7fa; color: #062e6f; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.85rem; }
-        
-        #chat-container { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 16px; max-width: 900px; width: 100%; margin: 0 auto; }
-        
-        .mensaje { padding: 14px 18px; border-radius: 14px; max-width: 82%; line-height: 1.5; white-space: pre-wrap; word-wrap: break-word; }
-        .usuario { background-color: #2b2c2f; align-self: flex-end; border-bottom-right-radius: 4px; }
-        .ia { background-color: #1e1f20; border: 1px solid #333537; align-self: flex-start; border-bottom-left-radius: 4px; }
-        .mensaje img { max-width: 260px; border-radius: 8px; display: block; margin-top: 8px; }
-        
-        #vista-previa { max-width: 900px; width: 100%; margin: 0 auto; padding: 0 20px 8px; display: none; align-items: center; gap: 10px; font-size: 0.85rem; color: #a8c7fa; }
-        #vista-previa button { background: #ff5252; color: white; border: none; border-radius: 4px; padding: 2px 8px; cursor: pointer; }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Mi Asistente IA</title>
+  <script src="https://jsdelivr.net"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
 
-        footer { background-color: #1e1f20; padding: 14px 20px; border-top: 1px solid #333537; }
-        .input-area { max-width: 900px; margin: 0 auto; display: flex; gap: 10px; align-items: center; }
-        
-        .btn-adjuntar { background: #2b2c2f; color: #e3e3e3; border: 1px solid #444746; padding: 10px 14px; border-radius: 10px; cursor: pointer; font-size: 1.1rem; }
-        .btn-adjuntar:hover { background: #37393b; }
-        
-        textarea { flex: 1; background: #131314; border: 1px solid #444746; color: #fff; padding: 12px; border-radius: 10px; resize: none; height: 48px; font-size: 0.95rem; outline: none; }
-        textarea:focus { border-color: #a8c7fa; }
-        
-        .btn-enviar { background: #a8c7fa; color: #062e6f; border: none; padding: 12px 20px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 0.95rem; }
-        .btn-enviar:disabled { opacity: 0.5; cursor: not-allowed; }
-    </style>
+    body {
+      background-color: #ffffff;
+      color: #1f1f1f;
+      display: flex;
+      flex-direction: column;
+      height: 100dvh;
+      overflow: hidden;
+    }
+
+    /* Barra superior minimalista */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      background-color: #ffffff;
+      z-index: 10;
+    }
+
+    .icon-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid #e5e5e5;
+      background-color: #f8f9fa;
+      color: #1f1f1f;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    .header-pill {
+      background-color: #eef4ff;
+      color: #1a73e8;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Panel oculto de Clave API */
+    #api-modal {
+      display: none;
+      position: fixed;
+      top: 64px;
+      left: 16px;
+      right: 16px;
+      background: #ffffff;
+      border: 1px solid #e0e0e0;
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+      z-index: 100;
+    }
+
+    #api-modal h3 {
+      font-size: 15px;
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    .api-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .api-row input {
+      flex: 1;
+      padding: 10px 12px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .api-row button {
+      background-color: #1f1f1f;
+      color: #ffffff;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* Área de chat con scroll fluido */
+    #chat-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      scroll-behavior: smooth;
+    }
+
+    #welcome-screen {
+      margin-top: auto;
+      margin-bottom: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .suggestion-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      color: #444;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .suggestion-item:active {
+      background-color: #f2f2f2;
+    }
+
+    /* Burbujas de mensajes */
+    .message {
+      max-width: 88%;
+      line-height: 1.5;
+      font-size: 15px;
+      word-wrap: break-word;
+    }
+
+    .user-message {
+      align-self: flex-end;
+      background-color: #f4f4f4;
+      color: #1f1f1f;
+      padding: 12px 16px;
+      border-radius: 20px;
+      border-bottom-right-radius: 6px;
+    }
+
+    .bot-message {
+      align-self: flex-start;
+      color: #1f1f1f;
+      width: 100%;
+      max-width: 100%;
+      padding: 4px 2px;
+    }
+
+    .bot-message p { margin-bottom: 10px; }
+    .bot-message ul, .bot-message ol { margin-left: 20px; margin-bottom: 10px; }
+    .bot-message li { margin-bottom: 4px; }
+    .bot-message pre {
+      background: #1e1e1e;
+      color: #f8f8f2;
+      padding: 12px;
+      border-radius: 10px;
+      overflow-x: auto;
+      margin: 10px 0;
+      font-size: 13px;
+    }
+
+    .speak-btn {
+      margin-top: 6px;
+      background: #f4f4f4;
+      border: none;
+      border-radius: 14px;
+      padding: 5px 12px;
+      font-size: 12px;
+      color: #444;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* Menú flotante estilo ChatGPT al tocar + */
+    #plus-menu {
+      display: none;
+      position: fixed;
+      bottom: 76px;
+      left: 16px;
+      width: 240px;
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 10px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.16);
+      border: 1px solid #f0f0f0;
+      z-index: 90;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .menu-option {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: none;
+      background: transparent;
+      font-size: 15px;
+      color: #1f1f1f;
+      cursor: pointer;
+      text-align: left;
+      width: 100%;
+    }
+
+    .menu-option:active {
+      background-color: #f4f4f4;
+    }
+
+    .menu-icon-circle {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background-color: #f2f3f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+
+    /* Etiqueta de modo activo o archivo adjunto */
+    #status-chips {
+      display: flex;
+      gap: 8px;
+      padding: 0 16px 6px 16px;
+      flex-wrap: wrap;
+    }
+
+    .chip {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      background: #eef4ff;
+      color: #1a73e8;
+      padding: 5px 12px;
+      border-radius: 16px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .chip button {
+      border: none;
+      background: none;
+      color: #1a73e8;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    /* Barra inferior estilo píldora */
+    footer {
+      padding: 6px 14px 16px 14px;
+      background-color: #ffffff;
+    }
+
+    .input-pill {
+      display: flex;
+      align-items: center;
+      background-color: #f4f4f4;
+      border-radius: 28px;
+      padding: 6px 8px 6px 12px;
+      gap: 6px;
+    }
+
+    .plus-btn {
+      background: none;
+      border: none;
+      font-size: 24px;
+      color: #444;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      transition: transform 0.2s;
+    }
+
+    .plus-btn.abierto {
+      transform: rotate(45deg);
+    }
+
+    #user-input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      font-size: 16px;
+      color: #1f1f1f;
+      outline: none;
+      resize: none;
+      max-height: 100px;
+      padding: 6px 0;
+    }
+
+    #mic-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: none;
+      background-color: transparent;
+      color: #444;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    #mic-btn.grabando {
+      background-color: #ea4335;
+      color: #ffffff;
+    }
+
+    #voice-mode-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: none;
+      background-color: #1a73e8;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    #send-btn {
+      display: none;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: none;
+      background-color: #1f1f1f;
+      color: #ffffff;
+      font-size: 16px;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    /* Pantalla completa de Conversación por Voz */
+    #voice-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(180deg, #f8fbff 0%, #ffffff 100%);
+      z-index: 200;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 40px 24px;
+    }
+
+    .voice-header {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1a73e8;
+    }
+
+    .voice-orb-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .voice-orb {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #60a5fa, #1a73e8);
+      box-shadow: 0 12px 35px rgba(26, 115, 232, 0.35);
+      transition: transform 0.3s ease;
+    }
+
+    .voice-orb.escuchando {
+      animation: respirar 1.5s infinite ease-in-out;
+      background: radial-gradient(circle at 30% 30%, #34d399, #059669);
+      box-shadow: 0 12px 35px rgba(5, 150, 105, 0.35);
+    }
+
+    .voice-orb.hablando {
+      animation: hablarAnim 0.6s infinite alternate ease-in-out;
+      background: radial-gradient(circle at 30% 30%, #60a5fa, #2563eb);
+    }
+
+    @keyframes respirar {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.12); }
+    }
+
+    @keyframes hablarAnim {
+      0% { transform: scale(0.95); }
+      100% { transform: scale(1.15); }
+    }
+
+    #voice-status {
+      font-size: 18px;
+      font-weight: 500;
+      color: #333;
+      text-align: center;
+    }
+
+    #voice-subtitle {
+      font-size: 14px;
+      color: #666;
+      text-align: center;
+      max-width: 300px;
+      min-height: 40px;
+    }
+
+    .close-voice-btn {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: none;
+      background-color: #ea4335;
+      color: #ffffff;
+      font-size: 24px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(234, 67, 53, 0.3);
+    }
+  </style>
 </head>
-<body>
+<body onclick="cerrarMenuSiFuera(event)">
 
-<header>
-    <h1>⚡ Mi Asistente IA Personal</h1>
-    <div class="api-box">
-        <input type="password" id="api-key" placeholder="Pega tu API Key de Google AI Studio">
-        <button onclick="guardarKey()">Guardar Clave</button>
-    </div>
-</header>
+  <header>
+    <button class="icon-btn" onclick="toggleApiModal()" title="Configurar Clave API">☰</button>
+    <div class="header-pill">✦ Mi Asistente IA</div>
+    <button class="icon-btn" onclick="nuevoChat()" title="Nuevo Chat">↻</button>
+  </header>
 
-<div id="chat-container">
-    <div class="mensaje ia">¡Hola! Ya estoy listo. Escríbeme lo que necesites o adjunta imágenes y archivos con el botón 📎.</div>
-</div>
-
-<div id="vista-previa">
-    <span id="nombre-archivo"></span>
-    <button onclick="quitarArchivo()">Quitar</button>
-</div>
-
-<footer>
-    <div class="input-area">
-        <input type="file" id="input-archivo" style="display: none;" accept="image/*,.pdf,.txt,.csv,.js,.html,.css,.json">
-        <button class="btn-adjuntar" title="Subir imagen o archivo" onclick="document.getElementById('input-archivo').click()">📎</button>
-        <textarea id="prompt" placeholder="Escribe tu mensaje aquí... (Enter para enviar)"></textarea>
-        <button class="btn-enviar" id="btn-enviar" onclick="enviarMensaje()">Enviar</button>
-    </div>
-</footer>
-
-<script>
-    const chatContainer = document.getElementById('chat-container');
-    const promptInput = document.getElementById('prompt');
-    const apiKeyInput = document.getElementById('api-key');
-    const inputArchivo = document.getElementById('input-archivo');
-    const vistaPrevia = document.getElementById('vista-previa');
-    const nombreArchivoSpan = document.getElementById('nombre-archivo');
-    const btnEnviar = document.getElementById('btn-enviar');
-
-    let archivoActual = null;
-    let historial = [];
-
-    window.onload = () => {
-        const keyGuardada = localStorage.getItem('mi_gemini_api_key');
-        if (keyGuardada) apiKeyInput.value = keyGuardada;
-    };
-
-    function guardarKey() {
-        const key = apiKeyInput.value.trim();
-        if (!key) return alert('Por favor pega una API Key válida.');
-        localStorage.setItem('mi_gemini_api_key', key);
-        alert('✅ Clave guardada en tu navegador.');
-    }
-
-    inputArchivo.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = () => {
-            const base64Data = reader.result.split(',')[1];
-            archivoActual = {
-                name: file.name,
-                mimeType: file.type || 'text/plain',
-                data: base64Data,
-                previewUrl: file.type.startsWith('image/') ? reader.result : null
-            };
-            nombreArchivoSpan.textContent = `📄 Adjunto: ${file.name}`;
-            vistaPrevia.style.display = 'flex';
-        };
-        reader.readAsDataURL(file);
-    });
-
-    function quitarArchivo() {
-        archivoActual = null;
-        inputArchivo.value = '';
-        vistaPrevia.style.display = 'none';
-    }
-
-    promptInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            enviarMensaje();
-        }
-    });
-
-    function agregarBurbuja(texto, clase, imagenUrl = null) {
-        const div = document.createElement('div');
-        div.className = `mensaje ${clase}`;
-        div.textContent = texto;
-        if (imagenUrl) {
-            const img = document.createElement('img');
-            img.src = imagenUrl;
-            div.appendChild(img);
-        }
-        chatContainer.appendChild(div);
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-        return div;
-    }
-
-    async function enviarMensaje() {
-        const apiKey = apiKeyInput.value.trim();
-        const texto = promptInput.value.trim();
-
-        if (!apiKey) return alert('⚠️ Primero pega tu API Key en la barra de arriba y dale a Guardar Clave.');
-        if (!texto && !archivoActual) return;
-
-        agregarBurbuja(texto || `[Archivo enviado: ${archivoActual.name}]`, 'usuario', archivoActual?.previewUrl);
-
-        const partesUsuario = [];
-        if (texto) partesUsuario.push({ text: texto });
-        if (archivoActual) {
-            partesUsuario.push({
-                inlineData: {
-                    mimeType: archivoActual.mimeType,
-                    data: archivoActual.data
-                }
-            });
-        }
-
-        historial.push({ role: "user", parts: partesUsuario });
-
-        promptInput.value = '';
-        quitarArchivo();
-        btnEnviar.disabled = true;
-
-        const burbujaCargando = agregarBurbuja('Pensando...', 'ia');
-
-        try {
-             const url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=" + apiKey;
-            const respuesta = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ contents: historial })
-            });
-
-            const datos = await respuesta.json();
-
-            if (datos.error) {
-                burbujaCargando.textContent = `❌ Error: ${datos.error.message}`;
-                historial.pop();
-            } else {
-                const textoIA = datos.candidates[0].content.parts[0].text;
-                burbujaCargando.textContent = textoIA;
-                historial.push({ role: "model", parts: [{ text: textoIA }] });
-            }
-        } catch (err) {
-            burbujaCargando.textContent = `❌ Error de conexión: ${err.message}`;
-            historial.pop();
-        } finally {
-            btnEnviar.disabled = false;
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
-    }
-</script>
-
-</body>
-</html>
+  <div id="api-modal">
+    <h3>🔑 Clave API de Google Gemini</h3>
+    <div class="api-row">
+      <input type="password" id="api-key-input" placeholder="Pega tu API Key aquí..." />
